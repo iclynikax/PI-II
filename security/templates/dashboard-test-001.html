@@ -5,7 +5,7 @@
 
 {% block 'title' %}
 
-  <title>iClynikaX : Security - Dashboard</title>
+  iClynikaX : Security - Dashboard
 
   <!-- Functions geral de javascripts -->
   <script src="{% static 'geral/js/myFunctions.js' %}?v={% now 'YmdHis' %}"></script>
@@ -13,10 +13,7 @@
 
 {% endblock 'title' %}
 
-
-
 {% block 'body' %}  
-
 
   <!-- ======= Sidebar ======= -->
 
@@ -131,7 +128,7 @@
                   <h5 class="card-title">Relatórios <span>|
                     <!-- Botão para direcionar ao periodo anterior selecionado -->
                     <a class="icon" data-tooltip='Acessa o mês Anterior: Não Atualizado' href="#" data-bs-toggle="dropdown">
-                      <i onclick="acssaPrdoAntror(this);" name="Periodo_Anterior" 
+                      <i onclick="acssaPrdoAntror(this);" id="{{slct_Periodo}}" name="Periodo_Anterior" 
                         {% if filtro == 'mes' %}
                           id="{{ mesAnoCorrente }}/{{ anoCorrente }}"
                         {% elif filtro == 'hoje' %}
@@ -141,10 +138,10 @@
                         style="cursor: pointer;">
                       </i>
                     </a>
-                    {{slct_Periodo}}
+                    <span id="data-relatorio">{{slct_Periodo}}</span>
                     <!-- Botão para direcionar ao periodo posterior/seguinte selecionado -->
                     <a class="icon" data-tooltip='Acessa o mês Seguinte: Não Atualizado' href="#" data-bs-toggle="dropdown">
-                      <i onclick="acssaPrdoPstror(this);" name="Periodo_Posterior"
+                      <i onclick="acssaPrdoPstror(this);" id="{{slct_Periodo}}" name="Periodo_Posterior"
                         {% if filtro == 'mes' %}
                           id="{{ mesAnoCorrente }}/{{ anoCorrente }}"
                         {% elif filtro == 'hoje' %}
@@ -232,9 +229,13 @@
                             type: 'datetime',
                             categories: categorias
                           },
-                          tooltip: { x: { format: formatoTooltip } }
+                          tooltip: {
+                            x: {
+                              format: 'dd/MM/yy HH:mm'
+                            },
+                          }
                         })
-                        //.render();
+                        .render();
                       });
                     </script>
                   <!-- End Line Chart -->
@@ -560,36 +561,29 @@
 
     
     function acssaPrdoAntror(obj){
-      const meses = [
-        "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
-        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
-      ];
+      const el = document.querySelector('i[name="Periodo_Anterior"]');
+      if (!el) return;
+      const slct_PrePeriodo = el.id; // ou pegue de algum elemento
+      const c_CrrntePrdo = `${slct_PrePeriodo} às 00:00`;
 
-      // Extrai mês e ano da string
-      const [mesTexto, anoTexto] = obj.id.split(" de ");
-      const mesIndex = meses.indexOf(mesTexto);
+      const pai = el.closest("a");
+      if (!pai) return;
 
-      let novoMesIndex = mesIndex - 1;
-      let novoAno = parseInt(anoTexto);
+      const dcmntPstrior = document.querySelector('i[name="Periodo_Posterior"]');
+      if (!dcmntPstrior) return;
+      
+      const paiPstrior = dcmntPstrior.closest("a");
+      if (!paiPstrior) return;
 
-      alert('obj.id Atual: '+obj.id);
+      const txtPstrior = document.getElementById('data-relatorio').textContent;
+      paiPstrior.setAttribute("data-tooltip", txtPstrior);
+      
+      document.getElementById('data-relatorio').textContent = el.id ;
+      atualizarTooltipPeriodo(c_CrrntePrdo, el, -1);
 
-      // Se for Janeiro, volta para Dezembro do ano anterior
-      if (novoMesIndex < 1) {
-        novoMesIndex = 11;
-        novoAno -= 1;
-      }
+      // alert('Refresh o gráfico abaixo.')
 
-      const mesAnterior = meses[novoMesIndex];
-      const novoTooltip = `Acessa o mês Anterior: ${mesAnterior}/${novoAno}`;
-
-      // Atualiza o atributo data-tooltip do <a> pai
-      const pai = obj.closest("a");
-      if (pai) {
-        pai.setAttribute("data-tooltip", novoTooltip);
-      }
-
-      renderizarGrafico(data, periodo); // passa o período como argumento
+      //renderizarGrafico('hoje', periodo); // passa o período como argumento
      
 
     }
@@ -598,95 +592,128 @@
 
 
     function acssaPrdoPstror(obj){
-      // Seleciona o elemento <i> com base no atributo name
       const el = document.querySelector('i[name="Periodo_Posterior"]');
-      const pai = el.closest("a");
-      const textoCompleto = pai.dataset.tooltip;
-      
+      if (!el) return;
+      const slct_PrePeriodo = el.id; // ou pegue de algum elemento
+      const c_CrrntePrdo = `${slct_PrePeriodo} às 00:00`;
 
-      // Acessa uma function na view para que seja atualizado os dados de Relatório do Dia/Mês/Ano Seguinte
-      if (textoCompleto.includes(" às ")) {
-        const apenasDiaMesAno = textoCompleto.split(": ")[1];  // Saida 7 de Novembro de 2025
-        alert(apenasDiaMesAno); 
-      }      
-      else if (textoCompleto.includes("/")) {
-        const apenasMesAno = textoCompleto.split(": ")[1]; // Saída: "Dezembro/2025"
-        alert(apenasMesAno); 
-      }
-      else {
-        const apenasAno = textoCompleto.split(": ")[1]; // Saída: "2026"
-        alert(apenasAno); 
-      }    
+      const pai = el.closest("a");
+      if (!pai) return;
+
+      const dcmntPstrior = document.querySelector('i[name="Periodo_Anterior"]');
+      if (!dcmntPstrior) return;
+      
+      const paiPstrior = dcmntPstrior.closest("a");
+      if (!paiPstrior) return;
+
+      const txtPstrior = document.getElementById('data-relatorio').textContent;
+      paiPstrior.setAttribute("data-tooltip", txtPstrior);
+      
+      document.getElementById('data-relatorio').textContent = el.id ;
+      atualizarTooltipPeriodo(c_CrrntePrdo, el, +1);
+
+      // alert('Refresh o gráfico abaixo.')
+
+      //renderizarGrafico('hoje', periodo); // passa o período como argumento
+       
     }
 
     //----------------------------------------------------------------------------------- Atualiza os valores de Title dos botões de relatórios
     // Atualiza o botão Anterior---------------------------------------------------------
     document.addEventListener("DOMContentLoaded", function () {
-      const meses = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho", "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
-      const c_antPrdo = "{{slct_AntPrdo}}";
-
-      // Seleciona o elemento <i> com base no atributo name
       const el = document.querySelector('i[name="Periodo_Anterior"]');
       if (!el) return;
+      const slct_PrePeriodo = el.id; // ou pegue de algum elemento
+      const c_CrrntePrdo = `${slct_PrePeriodo} às 00:00`;
 
-      const id = el.id;
       const pai = el.closest("a");
-
       if (!pai) return;
+      
+      atualizarTooltipPeriodo(c_CrrntePrdo, el, -1);
 
-      // Verifica se é formato de data (hoje) ou mês (mes)
-      if (c_antPrdo.includes(" às ")) {
-        // Formato: dia "10 de Novembro de 2025 às 00:00"
 
-        //const [diaTexto, mesTexto, anoTexto] = id.split(" de ");
-        const diaTexto = c_antPrdo.split(" de ")[0];
-        const mesTexto = meses.find(m => c_antPrdo.includes(m));
-
-        // Encontra o mês presente na string
-        const mesEncontrado = meses.find(m => c_antPrdo.includes(m));
-
-        let anoTexto = ''; // declara fora
-        if (mesEncontrado) {
-          const partes = c_antPrdo.match(/de (\d{4})\s+às/);
-          anoTexto = ''+partes[1]+''; // "2025"
-        }
-
-        const dataAtual = new Date(`${anoTexto}-${mesTexto}-${diaTexto}`);
-
-        // Transforma o dia por extenso
-        const mesNome = meses[parseInt(mesTexto, 10) - 1]; // converte "11" → 10 → "Novembro"
-        const novaData = `${diaTexto} de ${mesTexto} de ${anoTexto}`;
-
-        pai.setAttribute("data-tooltip", `Acessa o dia seguinte: ${novaData}`);
-      }
-      else if (c_antPrdo.includes("/")) {
-        // Formato: Mês "Novembro/2025"
-        const c_antPrdo = "{{slct_PrxPrdo}}";
-        const [mesTexto, anoTexto] = c_antPrdo.split("/");
-        const mesIndex = meses.indexOf(mesTexto);
-        let novoMesIndex = mesIndex + 0;
-        let novoAno = parseInt(anoTexto);
-
-        if (novoMesIndex < 1) {
-          novoMesIndex = 11;
-          novoAno -= 1;
-        }
-
-        const mesAnterior = meses[novoMesIndex];
-        const novoTooltip = `Acessa o mês Anterior: ${mesAnterior}/${novoAno}`;
-        pai.setAttribute("data-tooltip", novoTooltip);
-      }
-      else {
-        // Formato: Ano "2025"
-        const c_antPrdo = "{{slct_PrxPrdo}}";
-
-        const anoPosterior = c_antPrdo;
-        const novoTooltip = `Acessa o ano Anterior: ${anoPosterior}`;
-        pai.setAttribute("data-tooltip", novoTooltip);
-      }
     });
 
+
+
+function atualizarTooltipPeriodo(c_PreCrrntePrdo, el, nAjstePrdo = -1) {
+  const meses = [
+    "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+    "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+  ];
+
+  const pai = el.closest("a");
+  if (!pai) return;
+
+  if (c_PreCrrntePrdo.includes(" às ")) {
+
+    const entrada = c_PreCrrntePrdo;
+
+    // Extrai partes da data
+    const partes = entrada.split(" de ");
+    const dia = partes[0].padStart(2, '0'); // "09"
+    // alert(dia);
+    const mesNome = partes[1];
+    const ano = partes[2].split(" às ")[0];
+
+    const mesIndex = meses.indexOf(mesNome) + 1;
+    const mes = String(mesIndex).padStart(2, '0'); // "11"
+    // alert('mes: '+mes);
+
+    const c_CrrntePrdo = `${ano}-${(mes-1)}-${dia}`;  
+
+    // alert('c_CrrntePrdo: '+c_CrrntePrdo);
+
+    const dataAtual = new Date(ano, (mes-1), dia); // cria no fuso local
     
+    // alert('dataAtualAnterior:'+dataAtual);
+
+
+    dataAtual.setDate(dataAtual.getDate() + nAjstePrdo); // 👈 subtrai ou soma
+
+    // alert('dataAtual: '+dataAtual);
+
+    const diaNovo = dataAtual.getDate();
+    const mesNovo = meses[dataAtual.getMonth()];
+    const anoNovo = dataAtual.getFullYear();
+
+    const novaData = `${diaNovo} de ${mesNovo} de ${ano}`;
+    const direcao = nAjstePrdo < 0 ? "anterior" : nAjstePrdo > 0 ? "posterior" : "atual";
+    pai.setAttribute("data-tooltip", `Acessa o dia ${direcao}: ${novaData}`);
+
+    // alert('1. el.id:'+el.id);
+    el.setAttribute("id", `${diaNovo} de ${mesNovo} de ${ano}`);
+    // alert('2. el.id:'+el.id);
+
+  }
+
+  else if (c_PreCrrntePrdo.includes("/")) {
+    const [mesTexto, anoTexto] = c_CrrntePrdo.split("/");
+    const mesIndex = meses.indexOf(mesTexto);
+
+    let novoMesIndex = mesIndex + nAjstePrdo;
+    let novoAno = parseInt(anoTexto);
+
+    if (novoMesIndex < 0) {
+      novoMesIndex = 11;
+      novoAno -= 1;
+    } else if (novoMesIndex > 11) {
+      novoMesIndex = 0;
+      novoAno += 1;
+    }
+
+    const mesNovo = meses[novoMesIndex];
+    const direcao = nAjstePrdo < 0 ? "Anterior" : nAjstePrdo > 0 ? "Posterior" : "Atual";
+    pai.setAttribute("data-tooltip", `Acessa o mês ${direcao}: ${mesNovo}/${novoAno}`);
+  }
+
+  else {
+    const novoAno = parseInt(c_CrrntePrdo) + nAjstePrdo;
+    const direcao = nAjstePrdo < 0 ? "Anterior" : nAjstePrdo > 0 ? "Posterior" : "Atual";
+    pai.setAttribute("data-tooltip", `Acessa o ano ${direcao}: ${novoAno}`);
+  }
+}
+
 
     // Atualiza o botão Posterior----------------------------------------------------------
     document.addEventListener("DOMContentLoaded", function () {
