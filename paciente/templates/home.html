@@ -1,0 +1,171 @@
+{% extends "baseSecurity.html" %}
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+
+{% block 'head' %}
+
+   <title>iClynikaX : Cliente - Principal</title>
+
+{% endblock 'head' %}
+
+
+{% block 'body' %}  
+
+    <div class="wrapper sidebar-collapsed">
+  
+        <main id="main" class="main">
+
+            <div class="pagetitle">
+            <h1>Página Principal</h1>
+            <nav>
+                <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a>Clientes</a></li>
+                <li class="breadcrumb-item active">Histórico do Dia</li>
+                </ol>
+            </nav>
+            </div><!-- End Page Title -->
+            
+
+            <div class="row">
+                <div class="col-md-8">
+                    <form action="{% url 'url_home' %}" post="GET">
+                        <input type="text" class="form-control shadow-main-color" placeholder="Busque por profissionais ..." name="seek_medico">
+                        <br>
+
+                        <div class="especialidades">
+                            <span class="badge bg-secondary">
+                                {% for especialidade in especialidades %}
+                                    <input type="checkbox" name="seek_espcldds" value="{{especialidade.id}}">
+                                    <span class="badge bg-secondary">
+
+                                        {{especialidade}}
+                                    
+                                    </span>
+                                {% endfor %}                    
+                            </span>
+                            
+
+                        </div>
+                        <br>
+                        <input type="submit" value="filtrar" class="btn btn-success btn-dark-color">
+                    </form>
+                    <hr>
+
+                    {% if is_medico %}
+                        <div class="list-medicos">
+                            {% for medico in medicos %}
+                            <div class="card-medicos shadow-main-color">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <p style="font-size: 20px" class="p-bold">Dr(a). {{medico.nome}} <i class="bi bi-patch-check-fill icon-main"></i></p>
+                                        <p>{{medico.descricao}}</p>
+                                    </div>
+                                </div>  
+                                <p><i class="bi bi-map icon-main"></i>&nbsp&nbsp{{medico.rua}}, {{medico.numero}}.</p>
+                                <p><i class="bi bi-calendar2-week icon-main"></i>&nbsp&nbspProxima data: 
+                                    {% if medico.proxima_data %}
+                                        {{medico.proxima_data}}
+                                    {% else %}
+                                        Aguarde uma data.
+                                    {% endif %}                        
+                                <a href="{% url 'url_escler_hrrio' medico.id %}" class="btn btn-success btn-dark-color">Agendar</a>
+                            </div>
+                            <br>
+                            {% endfor %}
+                            <br>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="col">
+                    <div class="col-md-12">
+                        <p style="font-size: 25px" class="p-bold">Lembretes</p>
+
+                        <p class="bg-main-lembrete">
+                            <span class="p-bold"><i class="bi bi-exclamation-triangle-fill icon-differential"></i>&nbsp&nbsp Consulta com Pedro Sampario em 7 dias.</span>
+                        </p>
+                        
+                    </div>
+                </div>
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-body pb-0">
+                            <h5 class="card-title">Atividades por cidades <span>| {{mesAnoCorrente}}</span></h5>
+                            <div id="budgetChart" style="min-height: 400px;" class="echart"></div>
+                            <script>
+                                document.addEventListener("DOMContentLoaded", () => {
+                                // Defina os nomes das atividades como uma variável global
+                                const labels = [
+                                {% for atividade in Rgstrs_Atvddes %}
+                                    '{{ atividade.atvddeNome }}'{% if not forloop.last %},{% endif %}
+                                {% endfor %}
+                                ];
+
+                                var budgetChart = echarts.init(document.querySelector("#budgetChart"));
+                                budgetChart.setOption({
+                                    // Coloca um title sobro o ponto ou a reta----------------------------------------
+                                    tooltip: {
+                                        trigger: 'item',
+                                        formatter: function (params) {
+                                            let output = `
+                                                <div style="text-align: center;background-color: black; color: white; font-family: 'Times New Roman', serif; font-weight: bold; font-size: 14px;">${params.name}</div>
+                                                <pre style="font-family: monospace; margin: 0;">`;
+                                                params.value.forEach((val, idx) => {
+                                                    const nome = labels[idx];
+                                                    const linha = nome.padEnd(40, '.') + ' ' + val.toString().padStart(2, ' ');
+                                                    const bgColor = idx % 2 === 0 ? '#f0f0f0' : '#e0e0e0'; // alterna cor
+                                                    output += `<div style="background-color:${bgColor};">${linha}</div>`;
+                                                });
+                                                return output;
+                                            }
+                                    },
+                                    // Final sobre o title sobre a reta-----------------------------------------------
+                                    legend: {
+                                        data: [
+                                            {% for cidade in Rgstrs_Cddes %}
+                                            '{{ cidade }}'{% if not forloop.last %},{% endif %}
+                                            {% endfor %}
+                                        ]
+                                        },
+                                    radar: {
+                                    // shape: 'circle',
+                                        indicator: [
+                                        {% for atividade in Rgstrs_Atvddes %}
+                                        {
+                                            name: '{{ atividade.atvddeNome }}',
+                                            max: {{Rgstrs_MaxAtvddes}}
+                                        }{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                        ]
+                                    },
+                                    series: [{
+                                    name: 'Budget vs spending',
+                                    type: 'radar',
+                                    data: [
+                                        {% for cidade in Rgstrs_Series %}
+                                        {
+                                        value: [
+                                            {% for valor in cidade.value %}
+                                            {{ valor }}{% if not forloop.last %},{% endif %}
+                                            {% endfor %}
+                                        ],
+                                        name: '{{ cidade.name }}'
+                                        }{% if not forloop.last %},{% endif %}
+                                        {% endfor %}
+                                    ]                            
+                                    }]
+                                });
+                                });
+                            </script>
+                        </div>
+                    </div><!-- Final do Relatório de Atividades -->
+                </div>
+            </div>
+
+        </main>
+
+    </div>
+
+{% endblock 'body' %}

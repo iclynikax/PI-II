@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+
+<style>
+  html, body {
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+  }
+
+  .container {
+    height: 100vh; /* ocupa 100% da altura da tela */
+    width: 100%;
+  }
+
+  iframe {
+    border: solid 1px #777;
+    width: 100%;
+    height: 100%;
+  }
+</style>    
+
+{% endblock 'head' %}
+
+{% block 'body' %}
+    <div class="wrapper">
+
+        <main id="main">
+
+                <iframe  style="height: calc(100vh - 150px);	width: 100%;" src="https://calendar.google.com/calendar/embed?wkst=1&ctz=America%2FSao_Paulo&showPrint=0&src=aWNseW5pa2F4QGdtYWlsLmNvbQ&src=MDVmOTE0OWEyNGI3OGVjYjUyYmU2NjMxZTczMzZkMzAyMmFiNGUyMjRkM2I2ZjE4OTgxMjI2Yzk3MjFiMTExNEBncm91cC5jYWxlbmRhci5nb29nbGUuY29t&src=cHQtYnIuYnJhemlsaWFuI2hvbGlkYXlAZ3JvdXAudi5jYWxlbmRhci5nb29nbGUuY29t&color=%23039be5&color=%237cb342&color=%230b8043" frameborder="0" scrolling="no"></iframe>
+
+        </main>
+
+    </div>
+
+    <!--Ativa as opções do menu principal esquerdo -->
+    <script language="JavaScript">
+        <!--
+            document.getElementById('components-nav').className ='nav-content collapse show';
+            document.getElementById('sidebar-nav-Atendimento-agenda').className ='active';
+        //-->
+    </script>
+{% endblock 'body' %}
+

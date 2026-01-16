@@ -1,0 +1,465 @@
+{% load static %}
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="icon" href="{% static 'geral/img/favicon.ico' %}" type="image/x-icon">
+
+    <title>{% block 'title' %}{% endblock %}</title>
+
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'assets/img/favicon.png'%}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+
+  <!-- Google Fonts -->
+  <link href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'security/static/assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/boxicons/css/boxicons.min.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/quill/quill.snow.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/quill/quill.bubble.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/remixicon/remixicon.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/simple-datatables/style.css'%}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'security/static/assets/css/style.css'%}?v={% now 'YmdHis' %}" rel="stylesheet">
+       
+</head>
+  
+<body sidebar-collapsed>
+
+  <!-- ======= Header ======= -->
+  <header id="header" class="header fixed-top d-flex align-items-center">
+
+    <div class="d-flex align-items-center justify-content-between">
+      <a href="./" class="logo d-flex align-items-center">
+        <img src="{% static 'security/static/assets/img/logo.png'%}" alt="">
+        <span class="d-none d-lg-block">iClynikaX</span>
+      </a> 
+
+      <div style="display: flex; gap: 10px; align-items: center;">
+        <!-- Botão original -->
+        <i id="{{Perfil_User.id_mn_Esquerdo}}"
+          onclick="svsttusmnesquerdo(this);"
+          class="bi bi-list toggle-sidebar-btn"
+          style="cursor: pointer;"></i>
+
+        <!-- Novo botão ao lado -->
+        <i onclick="abrirPainelDireito();"
+          class="bi bi-layout-sidebar-inset-reverse"
+          style="cursor: pointer;">
+        </i>
+      </div>
+
+      
+
+    </div><!-- End Logo -->
+
+    <nav class="header-nav ms-auto">
+      <ul class="d-flex align-items-center">
+
+        <li class="nav-item d-block d-lg-none">
+          <a class="nav-link nav-icon search-bar-toggle " href="#">
+            <i class="bi bi-search"></i>
+          </a>
+        </li><!-- End Search Icon-->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-bell"></i>
+            <span class="badge bg-primary badge-number">4</span>
+          </a><!-- End Notification Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow notifications">
+            <li class="dropdown-header">
+              Você têm 4 notificações
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">Verificar todas</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-exclamation-circle text-warning"></i>
+              <div>
+                <h4>José Carlos Maria</h4>
+                <p>Aguardando aprovação para o procedimento.</p>
+                <p>14:45 - 10 set</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-x-circle text-danger"></i>
+              <div>
+                <h4>Maria de Lourdes Vera</h4>
+                <p>Não aprovou o procedimento: Exame de sangue. </p>
+                <p>10:05 - 10 set</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-check-circle text-success"></i>
+              <div>
+                <h4>Silvia Maria Madalena</h4>
+                <p>Aprovou o procedimento:</p>
+                <p>Operação Cardiaca.</p>
+                <p>09:55 - 10 set</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="notification-item">
+              <i class="bi bi-info-circle text-primary"></i>
+              <div>
+                <h4>Iolanda Helena de Paulo</h4>
+                <p>Enviar notificação:</p>
+                <p>Exame de Sangue</p>
+                <p>09:45 - 10 set</p>
+              </div>
+            </li>
+
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+            <li class="dropdown-footer">
+              <a href="#">Todas as Notificações</a>
+            </li>
+
+          </ul><!-- End Notification Dropdown Items -->
+
+        </li><!-- End Notification Nav -->
+
+        <li class="nav-item dropdown">
+
+          <a class="nav-link nav-icon" href="#" data-bs-toggle="dropdown">
+            <i class="bi bi-chat-left-text"></i>
+            <span class="badge bg-success badge-number">3</span>
+          </a><!-- End Messages Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow messages">
+            <li class="dropdown-header">
+              Você tem 3 mensagens
+              <a href="#"><span class="badge rounded-pill bg-primary p-2 ms-2">Verificar todas</span></a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="{% static 'security/static/assets/img/messages-1.jpg' %}" alt="" class="rounded-circle">
+                <div>
+                  <h4>Maria Hudson</h4>
+                  <p title="Cachorro: Doberman">Ultrassonografia </p>
+                  <p>11:45 - 10 set</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="{% static 'security/static/assets/img/messages-2.jpg' %}" alt="" class="rounded-circle">
+                <div>
+                  <h4>Vitória Hellen da Paz</h4>
+                  <p title="Cachorro: Pastor Alemão">Radiologia Simples</p>
+                  <p>11:30 - 09 set</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="message-item">
+              <a href="#">
+                <img src="{% static 'security/static/assets/img/messages-3.jpg' %}" alt="" class="rounded-circle">
+                <div>
+                  <h4>Mario Henrique José Maurício</h4>
+                  <p title="Cachorro: Buldogue">Eletrocardiograma</p>
+                  <p>08:15 - 08 set</p>
+                </div>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li class="dropdown-footer">
+              <a href="#">Todas as Mensagens</a>
+            </li>
+
+          </ul><!-- End Messages Dropdown Items -->
+
+        </li><!-- End Messages Nav -->
+
+        <li class="nav-item dropdown pe-3">
+
+          <a class="nav-link nav-profile d-flex align-items-center pe-0" href="#" data-bs-toggle="dropdown">
+            <img src="{{ Perfil_User.Foto.url }}" alt="Profile" class="rounded-circle">
+            <span class="d-none d-md-block dropdown-toggle ps-2">{{request.user.first_name}}</span> 
+          </a><!-- End Profile Iamge Icon -->
+
+          <ul class="dropdown-menu dropdown-menu-end dropdown-menu-arrow profile">
+            <li class="dropdown-header">
+              <h6>{{request.user.first_name}} {{request.user.last_name}}</h6>
+              <span>{{Perfil_User.Cargo}}</span>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'url_My_Profile' %}">
+                <i class="bi bi-person"></i>
+                <span>Meu Portifólio</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="users-profile.html">
+                <i class="bi bi-gear"></i>
+                <span>Account Settings</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="pages-faq.html">
+                <i class="bi bi-question-circle"></i>
+                <span>Need Help?</span>
+              </a>
+            </li>
+            <li>
+              <hr class="dropdown-divider">
+            </li>
+
+            <li>
+              <a class="dropdown-item d-flex align-items-center" href="{% url 'url_logout' %}">
+                <i class="bi bi-box-arrow-right"></i>
+                <span>Logout/Sair</span>
+              </a>
+            </li>
+
+          </ul><!-- End Profile Dropdown Items -->
+        </li><!-- End Profile Nav -->
+
+      </ul>
+    </nav><!-- End Icons Navigation -->
+ 
+  </header><!-- End Header -->
+
+
+  <!-- ======= Sidebar ======= -->
+  <aside id="sidebar" class="sidebar">
+
+    <ul class="sidebar-nav" id="sidebar-nav">
+
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="./">
+          <i class="bi bi-grid"></i>
+          <span>Menu Principal</span>
+        </a>
+
+      </li><!-- End Dashboard Nav -->
+
+      <!-- ======= Se o usuário for do grupo Atendente ======= -->
+      {% if cGrp_Usuario == 'Atendente' and not request.user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li><a title="Lista de cadastro de clientes"  href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+            <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+            <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
+            <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+          </ul>
+        </li><!-- End Forms Nav -->
+      {% endif %}
+      <!-- ======= Finaliza se o usuário for do grupo Atendente ======= -->
+
+      <!-- ======= Se o usuário for do grupo Gerente ======= -->
+        {% if cGrp_Usuario == 'Gerente' %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li><a title="Lista de cadastro de clientes"  href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+            <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+            <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
+            <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+          </ul>
+        </li>
+      {% endif %}
+      <!-- ======= Finaliza se o usuário for do grupo Gerente ======= -->
+
+      {% if request.user.is_superuser %}
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li><a title="Lista de cadastro de clientes" id="sidebar-nav-Atendimento-clientes" href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+            <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+            <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
+            <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+          </ul>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#security-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Security</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="security-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li><a title="Mapa Geral de Segurança" id="sidebar-nav-security-mapa" href="{% url 'url_security' %}"><i class="bi bi-circle"></i><span>Mapa Geral</span></a></li>
+          </ul>
+        </li>
+      {% endif %}
+
+      <!-- ======= Se o usuário for do PI-IV ======= -->
+        {% if cGrp_Usuario == 'PI-IV' and not request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#security-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Security</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="security-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li><a title="Mapa Geral de Segurança" id="sidebar-nav-security-mapa" href="{% url 'url_security' %}"><i class="bi bi-circle"></i><span>Mapa Geral</span></a></li>
+            </ul>
+          </li>
+        {% endif %}
+      <!-- ======= Fim das opções para os suário do PI-IV ======= -->
+
+
+
+
+      <li class="nav-heading">Configurações</li>
+      <li class="nav-item">
+        <a class="nav-link collapsed" data-bs-target="#usuarios-nav" data-bs-toggle="collapse" href="#">
+          <i class="bi bi-menu-button-wide"></i><span>Usuários [{{ cGrp_Usuario }}] </span><i class="bi bi-chevron-down ms-auto"></i>
+        </a>
+        <ul id="usuarios-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+          <li>
+            <a href="{% url 'url_scrty_acessos' %}">
+              <i class="bi bi-circle"></i><span>Acessos</span>
+            </a>
+          </li>
+        </ul>
+      </li><!-- End Forms Nav -->
+      <li class="nav-item">
+        <a class="nav-link collapsed" href="{% url 'url_scrty_sobre' %}">
+          <i class="bi bi-card-list"></i>
+          <span>Sobre</span>
+        </a>
+      </li><!-- End Register Page Nav -->
+
+
+    </ul>
+
+  </aside><!-- End Sidebar-->
+
+  
+    {% block 'body' %}{% endblock 'body' %}
+
+
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+            2025 <strong> - </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
+      </div>
+    </footer
+    ><!-- End Footer -->
+
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="{% static 'security/static/assets/vendor/apexcharts/apexcharts.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/chart.js/chart.umd.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/echarts/echarts.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/quill/quill.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/simple-datatables/simple-datatables.js'%}?v={% now 'YmdHis' %}"></script>
+    <script src="{% static 'security/static/assets/vendor/tinymce/tinymce.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/php-email-form/validate.js'%}"></script>
+
+    <!-- Template Main JS File -->
+    <script src="{% static 'security/static/assets/js/main.js'%}?v={% now 'YmdHis' %}"></script>
+
+
+    {% if Perfil_User.id_mn_Esquerdo == 0 %}
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        document.body.classList.add("toggle-sidebar");
+      });
+    </script>
+    {% endif %}
+    <script>
+      function svsttusmnesquerdo(obj) {
+        let novoValor = obj.id === "1" ? 0 : 1;
+        const url = "{% url 'atualizar_menu_esquerdo' %}";
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id_mn_Esquerdo: novoValor
+          })
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log('Valor atualizado com sucesso');
+            obj.id = novoValor.toString(); // atualiza o id do botão
+          } else {
+            console.error('Erro ao atualizar');
+          }
+        })
+        .catch(error => {
+          console.error('Erro na requisição:', error);
+        });
+        body: JSON.stringify({ id_mn_Esquerdo: parseInt(obj.id) })
+        // Assume que é zero se for 1 e Um se for zero        
+        obj.id = obj.id === "1" ? "0" : "1";
+      }
+
+      function abrirPainelDireito() {
+        // Exemplo: abrir painel lateral direito
+        document.getElementById('painel-direito').classList.toggle('ativo');
+      }
+
+      
+
+    </script>
+  </body>
+</html>

@@ -1,0 +1,55 @@
+{% load static %} 
+<!doctype html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <link rel="icon" href="{% static 'geral/img/favicon.ico' %}" type="image/x-icon">
+
+    <title>{% block 'title' %}{% endblock %}</title>
+
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="{% static 'assets/img/favicon.png'%}" rel="icon">
+    <link href="{% static 'assets/img/apple-touch-icon.png'%}" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i" rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="{% static 'security/static/assets/vendor/bootstrap/css/bootstrap.min.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/bootstrap-icons/bootstrap-icons.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/boxicons/css/boxicons.min.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/quill/quill.snow.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/quill/quill.bubble.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/remixicon/remixicon.css'%}" rel="stylesheet">
+    <link href="{% static 'security/static/assets/vendor/simple-datatables/style.css'%}" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="{% static 'security/static/assets/css/style.css'%}?v={% now 'YmdHis' %}" rel="stylesheet">
+    
+</head>
+  
+<body>
+    {% block 'body' %}{% endblock 'body' %}
+    <div class="page-container-footer">
+    <!-- Page Sidebar -->
+      <!-- Footer -->
+      <footer id="footer" class="footer">
+        <div class="copyright">
+              2025 <strong> - </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
+        </div>
+      </footer
+      ><!-- End Footer -->
+
+      <!-- /main content -->
+    </div>
+
+  </body>
+</html>
