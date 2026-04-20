@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 
 
+
 def is_Atendente(user):
     return user.groups.filter(name='Atendente').exists()
 
@@ -106,3 +107,4 @@ class Prfl_Endereco(models.Model):
 
     def __str__(self):
         return self.cliente.username
+

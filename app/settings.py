@@ -77,12 +77,12 @@ WSGI_APPLICATION = 'app.wsgi.application'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 # Acesso ao banco de Dados sql.lite - Que é o padrão do Django.
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-}
+#DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': BASE_DIR / 'db.sqlite3',
+#    }
+#}
 
 # --------------------------------------------------------------------------------------------------
 # Modelo para acesso ao banco de dados MySql
@@ -191,3 +191,6 @@ MESSAGE_TAGS = {
     constants.INFO: 'alert-info',
     constants.WARNING: 'alert-warning',
 }
+
+# chaves de acesso a API do Google Maps
+GOOGLE_MAPS_KEY = config("Key_Google_Maps")

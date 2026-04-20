@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+
+
+{% endblock 'head' %}
+
+{% block 'body' %}
+  
+    <div class="wrapper">
+ 
+        <main id="main" class="main">
+        
+            <div class="pagetitle">
+                <h1>Atendimento</h1>
+                <nav>
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="{% url  'url_home' %}">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'url_rtrdas_entrgas' %}">Retiradas & Entregas</a></li>
+                    </ol>
+                </nav>
+            </div><!-- End Page Title -->
+
+            <section class="section">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5 class="card-title">Relação de Retiradas & Entregas</h5>
+
+                                <!-- Table with stripped rows -->
+                                <table class="table datatable table-hover">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Cliente</th>
+                                            <th scope="col">PET</th>
+                                            <th scope="col">Ação</th>
+                                            <th scope="col">Operador</th>
+                                            <th scope="col">Data</th>
+                                            <th scope="col">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for consulta in rtrds_entrgs  %} 
+                                            <tr>
+                                                <td><a title="{{consulta.id}}" href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.Pet_Cliente.cliente.first_name}} {{consulta.Pet_Cliente.cliente.last_name}}</a></td>
+                                                <td><a title="{{consulta.id}}" href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.Pet_Cliente.Pet}} {{consulta.Pet_Cliente.Pet_Raca }} : {{consulta.Pet_Cliente.Pet_Raca }}</a></td>
+                                                <td>{{consulta.get_acao_display}}</td>
+                                                <td><a href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.usuario_responsavel.first_name}} {{consulta.usuario_responsavel.last_name}}</a></td>
+                                                <td>{{ consulta.data_abertura|date:"d/m/Y H:i" }}</td>
+                                                <td>{{consulta.get_status_display}}</td>
+                                            </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                <!-- End Table with stripped rows -->
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+        </main><!-- End #main -->
+
+    </div>
+
+<!--Ativa as opções do menu principal esquerdo -->
+<script language="JavaScript">
+    <!--
+        document.getElementById('components-nav').className ='nav-content collapse show';
+        document.getElementById('sidebar-nav-Atendimento-consultas').className ='active';
+    //-->
+</script>
+
+{% endblock 'body' %}

@@ -1,8 +1,10 @@
 from django.db import models
+from django.conf import settings
 from django.contrib.auth.models import User
 from medico.models import DatasAbertas, DadosMedico
-import datetime
 
+import datetime
+import urllib.parse
 
 from datetime import date
 
@@ -111,3 +113,66 @@ class Notificacao(models.Model):
 
     def __str__(self):
         return self.NmroWhtsApp
+
+
+class EntregaRetirada(models.Model):
+    ACOES = [
+        ('R', 'Retirada'), ('E', 'Entrega'),
+    ]
+    STATUS_CHOICES = [
+        ('A', 'Agendada'),
+        ('I', 'Iniciada'),
+        ('F', 'Finalizada'),
+        ('C', 'Cancelada'),
+    ]
+
+    usuario_responsavel = models.ForeignKey(User, on_delete=models.CASCADE, related_name="acoes")
+    cliente = models.ForeignKey(User, on_delete=models.DO_NOTHING)
+    acao = models.CharField(max_length=10, choices=ACOES)
+    Pet_Cliente = models.ForeignKey(Pet_Cliente, on_delete=models.DO_NOTHING, null=True, blank=True)
+
+    data_abertura = models.DateTimeField(auto_now_add=True)
+    data_fechamento = models.DateTimeField(blank=True, null=True)
+
+    status = models.CharField(max_length=1, choices=STATUS_CHOICES, default='A')
+
+    link = models.URLField(null=True, blank=True)
+    localizacao = models.CharField(max_length=255, blank=True, null=True)
+
+    # ✅ coordenadas de localização
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)    
+    
+    observacoes = models.TextField(blank=True, null=True)
+
+    # Novo campo para guardar a URL da rota
+    trajetoria = models.URLField(null=True, blank=True)
+
+    def __str__(self):
+        return (
+            f"{self.get_acao_display()} - "
+            f"{self.Pet_Cliente} | Cliente: {self.cliente} | "
+            f"Responsável: {self.usuario_responsavel.username} | "
+            f"Status: {self.get_status_display()} | "
+            f"Abertura: {self.data_abertura.strftime('%d/%m/%Y %H:%M')} | "
+            f"Fechamento: {self.data_fechamento.strftime('%d/%m/%Y %H:%M') if self.data_fechamento else 'Em aberto'}"
+        )
+
+
+
+
+
+
+
+    def gerar_trajetoria(self):
+        origem = "Av. Antonio Tiveron, 792 - Vila Jamil de Lima, Adamantina - SP, 17800-000"
+        destino = self.localizacao if self.localizacao else ""
+        if destino:
+            api_key = settings.GOOGLE_MAPS_KEY
+            origem_encoded = urllib.parse.quote(origem)
+            destino_encoded = urllib.parse.quote(destino)
+            return (
+                f"https://www.google.com/maps/embed/v1/directions?"
+                f"key={api_key}&origin={origem_encoded}&destination={destino_encoded}"
+            )
+        return ""

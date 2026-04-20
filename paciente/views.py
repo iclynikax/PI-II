@@ -18,7 +18,7 @@ from usuarios.models import is_Gerente, is_Atendente, is_Médico, is_Cliente, Ge
 from usuarios.utilities import clclar_idade
 from usuarios.models import Prfl_Endereco
 from security.models import Security_Logs
-from .models import Consulta, Documento, Notificacao, Pet_Cliente, Pet, calcular_idade
+from .models import Consulta, Documento, EntregaRetirada, Notificacao, Pet_Cliente, Pet, calcular_idade
 from datetime import datetime, timedelta
 from collections import defaultdict
 
@@ -30,8 +30,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
-import time
 
+import requests
 
 import time
 import uuid
@@ -792,10 +792,60 @@ def fnctn_add_atrzacao(request, id_consulta):
 
         new_NtfKcao = Notificacao(titulo="Termo de autorização para procedimento cirúrgico",
                                   consulta=Consulta.objects.get(
-                                      id=id_consulta),
+                                  id=id_consulta),
                                   NmroWhtsApp=Get_NmroCelular,
                                   descricao=cDescricao
                                   )
         new_NtfKcao.save()
 
         return redirect('url_cnslta', id_consulta=slct_cnslta.id)
+
+
+
+
+
+@login_required(login_url='/usuarios/login/')
+def fnctn_rtrdas_entrgas(request):
+    slct_rtrdas_entrgas = EntregaRetirada.objects.all().order_by('data_abertura')
+    
+    if request.method == "GET":
+
+        return render(request, 'RetiradasEngregas.html', {'rtrds_entrgs': slct_rtrdas_entrgas,
+                                                         } 
+                     )
+
+
+
+@login_required(login_url='/usuarios/login/')
+def fnctn_rtrda_entrga(request, id_RtrdEntrga):
+    slct_RtrdEntrga = EntregaRetirada.objects.get(id=id_RtrdEntrga)
+
+    # Endereço fixo de origem
+    origem = "Avenida Antonio Tiveron, 792, Adamantina/SP, Brasil, 17805-380"
+    origem_lat, origem_lng = geocodificar(origem)
+
+    # Endereço variável de destino (campo localizacao do banco)
+    # destino_lat, destino_lng = geocodificar(slct_RtrdEntrga.localizacao)
+    destino_lat = slct_RtrdEntrga.latitude
+    destino_lng = slct_RtrdEntrga.longitude
+
+    iframe_url = f"/static/pacientes/Mapa_Rtrda_Entrga.html?origemLat={origem_lat}&origemLng={origem_lng}&destinoLat={destino_lat}&destinoLng={destino_lng}"
+
+    return render(request, 'RetiradaEntrega.html', {
+        'RtrdaEntrga': slct_RtrdEntrga,
+        'iframe_url': iframe_url
+    })
+
+
+
+
+# Transformando os dois endereços em lat/lng usando o serviço gratuito Nominatim (OpenStreetMap).
+def geocodificar(endereco):
+    url = "https://nominatim.openstreetmap.org/search"
+    params = {"q": endereco, "format": "json"}
+    response = requests.get(url, params=params, headers={"User-Agent": "sua-app"})
+    data = response.json()
+    if data:
+        return float(data[0]["lat"]), float(data[0]["lon"])
+    return None, None
+

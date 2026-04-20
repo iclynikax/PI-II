@@ -17,6 +17,10 @@ urlpatterns = [
          views.fnctn_pet_clnte_add, name="url_pet_clnte_add"),
 
     path('exames/', views.fnctn_pcnts_exmes, name="url_pcnts_exmes"),
+
+    path('retiradas_entregas/', views.fnctn_rtrdas_entrgas, name="url_rtrdas_entrgas"),
+    path('retirada_entrega/<int:id_RtrdEntrga>/', views.fnctn_rtrda_entrga, name="url_rtrda_entrga"),
+
     path('exame/<int:id_exame>/', views.fnctn_pcnts_exme, name="url_pcnts_exme"),
     path('minhas_autoriza/', views.fnctn_mnhs_atrza, name="url_mnhs_atrza"),
     path('autorizacoes/', views.fnctn_atrzacoes, name="url_atrzacoes"),

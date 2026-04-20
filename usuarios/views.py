@@ -18,6 +18,7 @@ import json       # Usado para salvar o status no menu esquerdo para o Usuário
 from django.contrib.auth.forms import PasswordChangeForm
 from brazilcep import get_address_from_cep
 
+
 from django.conf import settings
 from django.urls import reverse
 
@@ -423,7 +424,7 @@ def fnct_clnts_edit(request, id_cliente):
 
                 return redirect('/usuarios/my-profile/')
             else:
-                if get_firstname is None:
+                if User.get_firstname is None:
                     messages.add_message(
                         request, constants.ERROR, 'A Foto não foi informada...')
 

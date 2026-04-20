@@ -51,7 +51,7 @@
         <!-- Botão original -->
         <i id="{{Perfil_User.id_mn_Esquerdo}}"
           onclick="svsttusmnesquerdo(this);"
-          class="bi bi-list toggle-sidebar-btn"
+          class="bi bi-list "
           style="cursor: pointer;"></i>
 
         <!-- Novo botão ao lado -->
@@ -334,6 +334,7 @@
             <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
             <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
             <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+            <li><a title="Retirada e entregas de Pets" href="{% url 'url_rtrdas_entrgas'  %}"><i class="bi bi-circle"></i><span>Retirada & Entregas</span></a></li>
           </ul>
         </li>
 
@@ -395,7 +396,7 @@
     <!-- Footer -->
     <footer id="footer" class="footer">
       <div class="copyright">
-            2025 <strong> - </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
+            2025 - 2026 <strong> - </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
       </div>
     </footer
     ><!-- End Footer -->
@@ -416,12 +417,12 @@
     <script src="{% static 'security/static/assets/js/main.js'%}?v={% now 'YmdHis' %}"></script>
 
 
-    {% if Perfil_User.id_mn_Esquerdo == 0 %}
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        document.body.classList.add("toggle-sidebar");
-      });
-    </script>
+    {% if Perfil_User.id_mn_Esquerdo == 1 %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.classList.add("toggle-sidebar");
+        });
+      </script>
     {% endif %}
     <script>
       function svsttusmnesquerdo(obj) {
