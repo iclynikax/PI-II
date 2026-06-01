@@ -21,6 +21,9 @@ urlpatterns = [
     path('retiradas_entregas/', views.fnctn_rtrdas_entrgas, name="url_rtrdas_entrgas"),
     path('retirada_entrega/<int:id_RtrdEntrga>/', views.fnctn_rtrda_entrga, name="url_rtrda_entrga"),
 
+    path('Mntrmnto_Lsta/', views.fnctn_mntrnto_lsta, name="url_mntrnto_lsta"),
+    path('Mntrmnto/<int:id_Mntoramento>/', views.fnctn_mntrnto, name="url_mntrnto"),
+
     path('exame/<int:id_exame>/', views.fnctn_pcnts_exme, name="url_pcnts_exme"),
     path('minhas_autoriza/', views.fnctn_mnhs_atrza, name="url_mnhs_atrza"),
     path('autorizacoes/', views.fnctn_atrzacoes, name="url_atrzacoes"),

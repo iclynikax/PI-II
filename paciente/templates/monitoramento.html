@@ -1,0 +1,252 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+    <div class="wrapper">
+ 
+        <main id="main" class="main">
+
+            <section class="section">
+
+                <div class="row" >
+                    <div class="pagetitle">
+                        <h1>Monitoramento & Acompanhamento</h1>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'url_home' %}">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'url_rtrdas_entrgas' %}">Cadastro</a></li>
+                            <li class="breadcrumb-item active">Editando</li>
+                        </ol>
+                    </div>
+                    {% for message in messages %}
+                        <section class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="bi 
+                                {% if message.tags == 'success' %}bi-check-circle-fill text-success
+                                {% elif message.tags == 'error' %}bi-x-circle-fill text-danger
+                                {% elif message.tags == 'warning' %}bi-exclamation-triangle-fill text-warning
+                                {% else %}bi-info-circle-fill text-info{% endif %}
+                            "></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </section>
+                    {% endfor %}
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="VGeral-tab" data-bs-toggle="tab" data-bs-target="#VGeral" type="button" role="tab" aria-controls="VGeral" aria-selected="true">Cliente</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pet-tab" data-bs-toggle="tab" data-bs-target="#pet" type="button" role="tab" aria-controls="pet" aria-selected="false">Pet</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="Local-tab" data-bs-toggle="tab" data-bs-target="#Local" type="button" role="tab" aria-controls="Local" aria-selected="false">Local</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="Dslokmnto-tab" data-bs-toggle="tab" data-bs-target="#Dslokmnto" type="button" role="tab" aria-controls="Dslokmnto" aria-selected="false">Monitoramento</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="Esp_32-tab" data-bs-toggle="tab" data-bs-target="#Esp_32" type="button" role="tab" aria-controls="Esp_32" aria-selected="false">Raspberry Pi Pico : 0294</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="Rspbrry_Pi_Pico-tab" data-bs-toggle="tab" data-bs-target="#Rspbrry_Pi_Pico" type="button" role="tab" aria-controls="Rspbrry_Pi_Pico" aria-selected="false">Esp 32 : 0157</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                            <button class="nav-link" id="#Historico-tab" data-bs-toggle="tab" data-bs-target="#Historico" type="button" role="tab" aria-controls="#Historico" aria-selected="false">Histórico</button>
+                            </li>
+                        </ul>
+                        <div class="tab-content pt-2" id="myTabBasico">
+                            <div class="tab-pane fade show active accordion-item" id="VGeral" role="tabpanel" aria-labelledby="VGeral">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="card">
+                                            <div class="card-body profile-card pt-4 d-flex flex-column align-items-center">
+                                                <div class="col-md"><img src="{{rtrds_mntrmnto.pet_cliente.cliente.perfil.Foto.url}}" class="rounded-circle" style="height: auto; max-width: 150px;" alt="Foto do Cliente"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md">
+                                        <p class="p-bold"><a><b>Cliente: </b>{{rtrds_mntrmnto.pet_cliente.cliente.first_name}} {{rtrds_mntrmnto.pet_cliente.cliente.last_name}}</a>
+                                        <p><b>Endereço: </b>{{ rtrds_mntrmnto.pet_cliente.cliente.perfil.Endereco }} - {{ rtrds_mntrmnto.pet_cliente.cliente.perfil.Cidade }}/{{ rtrds_mntrmnto.pet_cliente.cliente.perfil.UF }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show accordion-item" id="pet" role="tabpanel" aria-labelledby="pet">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <b>Detalhe do Pet: </b>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <img src="{{rtrds_mntrmnto.pet_cliente.Pet_Foto.url}}" class="Esp_32-card-lg" style="height: 195px; width: auto;" title="Foto do Pet" alt="Foto do Pet">
+                                            </div>    
+                                            <div class="col-md-1">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <label for=""><b>Espécie:</b></label><br>
+                                                    {{rtrds_mntrmnto.pet_cliente.Pet}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <label for=""><b>Raça:</b></label><br>
+                                                    {{rtrds_mntrmnto.pet_cliente.Pet_Raca }}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-1">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <label for=""><b>Nome:</b></label><br>
+                                                    {{rtrds_mntrmnto.pet_cliente.Pet_Nome }}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Local" role="tabpanel" aria-labelledby="Local">
+                                <div class="row">
+                                    <div class="col-md">
+                                        <b>Local do Monitoramento </b>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <label for=""><b>Descrição:</b></label><br>
+                                                    {{rtrds_mntrmnto.local.nome}}
+                                                </div>
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div data-mdb-input-init class="form-outline">
+                                                    <label for=""><b>Detalhe:</b></label><br>
+                                                    {{rtrds_mntrmnto.local.descricao}}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Dslokmnto" role="tabpanel" aria-labelledby="Dslokmnto">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <h5 class="p-bold">Detalhes do Monitoramento </h5>
+                                            <div class="row mb-12">
+                                                <div class="tab-pane col-md-12" id="get_dados" role="tabpanel" style="height: 690px; width: 110%;">
+                                                    <iframe
+                                                        src="{{ iframe_url }}"
+                                                        width="100%"
+                                                        height="685px"
+                                                        style="border:0;"
+                                                        allowfullscreen=""
+                                                        loading="lazy">
+                                                    </iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Esp_32" role="tabpanel" 
+                                 aria-labelledby="Esp_32">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="row mb-12">
+                                                <div class="tab-pane col-md-12" id="get_dados" 
+                                                    role="tabpanel"
+                                                    style="height: 690px; width: 110%;">
+                                                    <iframe
+                                                        src="{% url 'url_emulador_esp32_s3' rtrds_mntrmnto.id %}"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style="border:0;"
+                                                        allowfullscreen=""
+                                                        loading="lazy"
+                                                        scrolling="no"
+                                                    >
+                                                    </iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Rspbrry_Pi_Pico" role="tabpanel" aria-labelledby="Rspbrry_Pi_Pico">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="row mb-12">
+                                                <div class="tab-pane col-md-12" id="get_dados" role="tabpanel" style="height: 690px; width: 110%;">
+                                                    <iframe
+                                                        src="{% url 'url_emulador_Rspbrry_PI_Pico_W' rtrds_mntrmnto.id %}"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style="border:0;"
+                                                        allowfullscreen=""
+                                                        loading="lazy"
+                                                        scrolling="no"
+                                                    >
+                                                    </iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Historico" role="tabpanel" aria-labelledby="Historico">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <div class="card">
+                                            <div class="card-body">
+                                            <h5 class="p-bold">Início: {{ rtrds_mntrmnto.start_date|date:"d/m/Y" }} - Final: {{ rtrds_mntrmnto.end_date|date:"d/m/Y" }}</h5>
+                                                <!-- Table with stripped rows -->
+                                                <table class="table datatable table-hover">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col">Horas</th>
+                                                            <th scope="col" Title="Temperatura"> °C </th>
+                                                            <th scope="col">Ruído</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {% for rsgstr_hstrco in hstrco_mntrmnto  %} 
+                                                            <tr>
+                                                                <td><a>{{ rsgstr_hstrco.timestamp|date:"H:i:s" }}</a></td>
+                                                                <td><a>{{rsgstr_hstrco.temperature|floatformat:2 }} </a></td>
+                                                                <td><a>{{rsgstr_hstrco.noise|floatformat:2 }}</a></td>
+                                                            </tr>
+                                                        {% endfor %}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main><!-- End #main -->
+
+    </div>    
+
+    <!--Ativa as opções do menu principal esquerdo -->
+<script language="JavaScript">
+    <!--
+        document.getElementById('components-nav').className ='nav-content collapse show';
+        document.getElementById('sidebar-nav-Monitoramento').className ='active';
+    //-->
+</script>
+
+
+{% endblock 'body' %}

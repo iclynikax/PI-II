@@ -22,6 +22,9 @@ def is_Médico(user):
 def is_PI_IV(user):
     return user.groups.filter(name='PI-IV').exists()
 
+def is_PI_V(user):
+    return user.groups.filter(name='PI-V').exists()
+
 
 def Get_cGrp_Usuario(user):
     Get_cGrp_Usuario = "Desconhecido"
@@ -39,6 +42,9 @@ def Get_cGrp_Usuario(user):
 
     if (is_PI_IV(user)):
         Get_cGrp_Usuario = "PI-IV"
+
+    if (is_PI_V(user)):
+        Get_cGrp_Usuario = "PI-V"
 
     return Get_cGrp_Usuario
 

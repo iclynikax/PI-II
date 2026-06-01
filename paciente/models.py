@@ -7,6 +7,7 @@ import datetime
 import urllib.parse
 
 from datetime import date
+import time
 
 
 def calcular_idade(dt_nascimento):
@@ -158,12 +159,6 @@ class EntregaRetirada(models.Model):
             f"Fechamento: {self.data_fechamento.strftime('%d/%m/%Y %H:%M') if self.data_fechamento else 'Em aberto'}"
         )
 
-
-
-
-
-
-
     def gerar_trajetoria(self):
         origem = "Av. Antonio Tiveron, 792 - Vila Jamil de Lima, Adamantina - SP, 17800-000"
         destino = self.localizacao if self.localizacao else ""
@@ -176,3 +171,41 @@ class EntregaRetirada(models.Model):
                 f"key={api_key}&origin={origem_encoded}&destination={destino_encoded}"
             )
         return ""
+
+
+"""
+   Local com data inicial e final de uso, 
+   e vincular os registros a qual pet estava nesse local naquele momento. """
+class Local(models.Model):
+    nome = models.CharField(max_length=100)
+    descricao = models.TextField(null=True, blank=True)
+
+    def __str__(self):
+        return self.nome
+    
+
+"""Registro de qual pet está em qual local e por quanto tempo"""
+class PetLocalAssignment(models.Model):
+    pet_cliente = models.ForeignKey(Pet_Cliente, on_delete=models.CASCADE, related_name="locais")
+    local = models.ForeignKey(Local, on_delete=models.CASCADE, related_name="pets")
+    start_date = models.DateTimeField()
+    end_date = models.DateTimeField()
+    Foto = models.ImageField(upload_to="fotos_local", null=True, blank=True)
+    Video = models.ImageField(upload_to="Hospitalization/Videos", null=True, blank=True)
+
+
+    def __str__(self):
+        return f"{self.pet_cliente.Pet_Nome} em {self.local.nome} ({self.start_date} - {self.end_date})"
+
+
+"""Histórico de registros de temperatura/ruído"""
+class PetMonitorHistory(models.Model):
+    assignment = models.ForeignKey(PetLocalAssignment, on_delete=models.CASCADE, related_name="historicos")
+    timestamp = models.DateTimeField(auto_now_add=True)
+    temperature = models.FloatField()
+    noise = models.FloatField()
+    criado_em = models.DateTimeField(auto_now_add=True, null=True, blank=True)  # <-- campo de criação automático
+
+    def __str__(self):
+        return f"{self.assignment.pet_cliente.Pet_Nome} - {self.assignment.local.nome} - {self.timestamp}"
+    

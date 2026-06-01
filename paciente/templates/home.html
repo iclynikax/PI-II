@@ -1,4 +1,4 @@
-{% extends "baseSecurity.html" %}
+{% extends "base.html" %}
 {% load static %}
 <!doctype html>
 <html lang="pt-BR">
@@ -20,7 +20,7 @@
             <h1>Página Principal</h1>
             <nav>
                 <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="/">Home</a></li>
+                <li class="breadcrumb-item"><a href="{% url 'url_home' %}">Home</a></li>
                 <li class="breadcrumb-item"><a>Clientes</a></li>
                 <li class="breadcrumb-item active">Histórico do Dia</li>
                 </ol>

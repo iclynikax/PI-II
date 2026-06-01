@@ -938,3 +938,25 @@ def atualizar_menu_esquerdo(request):
 
     # Se não for POST, retorna erro
     return JsonResponse({'error': 'Método não permitido'}, status=405)
+
+
+@login_required(login_url='/usuarios/login/')
+def fnctn_send_telegram(token, chat_id, mensagem):
+    url = f"https://api.telegram.org/bot{token}/sendMessage"
+    payload = {
+        'chat_id': chat_id,
+        'text': mensagem
+    }
+    r = requests.post(url, data=payload)
+    return r.json()
+
+@login_required(login_url='/usuarios/login/')
+def fnctn_telegram_send(token, chat_id, mensagem):
+
+    # Substitua com seus dados
+    TOKEN = 'SEU_TOKEN_AQUI'
+    CHAT_ID = 'SEU_CHAT_ID_AQUI'
+    TEXTO = 'Olá, esta é uma mensagem automática do Python!'
+
+    fnctn_send_telegram(TOKEN, CHAT_ID, TEXTO)
+

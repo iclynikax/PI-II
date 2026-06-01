@@ -13,11 +13,11 @@
         <main id="main" class="main">
         
             <div class="pagetitle">
-                <h1>Atendimento</h1>
+                <h1>Monitoramento & Acompanhamento</h1>
                 <nav>
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="{% url  'url_home' %}">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{% url 'url_rtrdas_entrgas' %}">Retiradas & Entregas</a></li>
+                        <li class="breadcrumb-item"><a href="{% url 'url_rtrdas_entrgas' %}">Lista</a></li>
                     </ol>
                 </nav>
             </div><!-- End Page Title -->
@@ -27,7 +27,7 @@
                     <div class="col-lg-12">
                         <div class="card">
                             <div class="card-body">
-                                <h5 class="card-title">Relação de Retiradas & Entregas</h5>
+                                <h5 class="card-title">Relação de de Pets sob observação</h5>
 
                                 <!-- Table with stripped rows -->
                                 <table class="table datatable table-hover">
@@ -35,21 +35,19 @@
                                         <tr>
                                             <th scope="col">Cliente</th>
                                             <th scope="col">PET</th>
-                                            <th scope="col">Ação</th>
-                                            <th scope="col">Operador</th>
-                                            <th scope="col">Data</th>
-                                            <th scope="col">Status</th>
+                                            <th scope="col">Local</th>
+                                            <th scope="col">Entrada</th>
+                                            <th scope="col">Saída</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {% for consulta in rtrds_entrgs  %} 
+                                        {% for rsgstr_mntrmnto in rtrds_mntrmnto  %} 
                                             <tr>
-                                                <td><a title="{{consulta.id}}" href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.Pet_Cliente.cliente.first_name}} {{consulta.Pet_Cliente.cliente.last_name}}</a></td>
-                                                <td><a title="{{consulta.id}}" href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.Pet_Cliente.Pet}} {{consulta.Pet_Cliente.Pet_Raca }} : {{consulta.Pet_Cliente.Pet_Raca }}</a></td>
-                                                <td>{{consulta.get_acao_display}}</td>
-                                                <td><a href="{% url 'url_rtrda_entrga' consulta.id %}">{{consulta.usuario_responsavel.first_name}} {{consulta.usuario_responsavel.last_name}}</a></td>
-                                                <td>{{ consulta.data_abertura|date:"d/m/Y H:i" }}</td>
-                                                <td>{{consulta.get_status_display}}</td>
+                                                <td><a title="{{rsgstr_mntrmnto.id}}" href="{% url 'url_mntrnto' rsgstr_mntrmnto.id %}">{{rsgstr_mntrmnto.pet_cliente.cliente.first_name}} {{rsgstr_mntrmnto.pet_cliente.cliente.last_name}}</a></td>
+                                                <td><a href="{% url 'url_mntrnto' rsgstr_mntrmnto.id %}">{{rsgstr_mntrmnto.pet_cliente.Pet}} {{rsgstr_mntrmnto.pet_cliente.Pet_Raca }} : {{rsgstr_mntrmnto.pet_cliente.Pet_Raca }}</a></td>
+                                                <td><a title=" {{rsgstr_mntrmnto.local.descricao }}" href="{% url 'url_mntrnto' rsgstr_mntrmnto.id %}">{{rsgstr_mntrmnto.local.nome}}</a></td>
+                                                <td><a href="{% url 'url_mntrnto' rsgstr_mntrmnto.id %}">{{ rsgstr_mntrmnto.start_date|date:"d/m/Y H:i" }}</a></td>
+                                                <td><a href="{% url 'url_mntrnto' rsgstr_mntrmnto.id %}">{{ rsgstr_mntrmnto.end_date|date:"d/m/Y H:i" }}</a></td>
                                             </tr>
                                         {% endfor %}
                                     </tbody>
@@ -58,7 +56,6 @@
 
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>
@@ -71,7 +68,7 @@
 <script language="JavaScript">
     <!--
         document.getElementById('components-nav').className ='nav-content collapse show';
-        document.getElementById('sidebar-nav-Retirada-Entrega').className ='active';
+        document.getElementById('sidebar-nav-Monitoramento').className ='active';
     //-->
 </script>
 

@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block 'head' %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/inputmask/5.0.8/inputmask.min.js"></script>
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Raleway:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
+
+
+{% endblock 'head' %}
+
+{% block 'body' %}
+
+    <div class="wrapper">
+ 
+        <main id="main" class="main">
+
+            <section class="section">
+
+                <div class="row" >
+                    <div class="pagetitle">
+                        <h1>Monitoramento & Acompanhamento</h1>
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="/">Home</a></li>
+                            <li class="breadcrumb-item"><a href="{% url 'url_mntrnto_lsta' %}">Cadastro</a></li>
+                            <li class="breadcrumb-item active">Editando</li>
+                        </ol>
+                    </div>
+                    {% for message in messages %}
+                        <section class="alert {{ message.tags }} alert-dismissible fade show" role="alert">
+                            <i class="bi 
+                                {% if message.tags == 'success' %}bi-check-circle-fill text-success
+                                {% elif message.tags == 'error' %}bi-x-circle-fill text-danger
+                                {% elif message.tags == 'warning' %}bi-exclamation-triangle-fill text-warning
+                                {% else %}bi-info-circle-fill text-info{% endif %}
+                            "></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </section>
+                    {% endfor %}
+                    <div class="col-md-12">
+                        <ul class="nav nav-tabs" id="myTab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="VGeral-tab" data-bs-toggle="tab" data-bs-target="#VGeral" type="button" role="tab" aria-controls="VGeral" aria-selected="true">Home</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="Esp_32-tab" data-bs-toggle="tab" data-bs-target="#Esp_32" type="button" role="tab" aria-controls="Esp_32" aria-selected="false">Esp 32 : </button>
+                            </li>
+                        </ul>
+                        <div class="tab-content pt-2" id="myTabBasico">
+                            <div class="tab-pane fade show active accordion-item" id="VGeral" role="tabpanel" aria-labelledby="VGeral">
+                                <div class="row">
+                                    <div class="col-md-2">
+                                        <div class="card">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="tab-pane fade show  accordion-item" id="Esp_32" role="tabpanel" aria-labelledby="Esp_32">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="row">
+                                            <div class="row mb-12">
+                                                <div class="tab-pane col-md-12" id="get_dados" role="tabpanel" style="height: 730px; width: 100%;">
+                                                    <iframe
+                                                        src="{% url 'url_emulador_esp32_s3' %}"
+                                                        width="100%"
+                                                        height="100%"
+                                                        style="border:0;"
+                                                        allowfullscreen=""
+                                                        loading="lazy"
+                                                        scrolling="no"
+                                                    >
+                                                    </iframe>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </section>
+
+        </main><!-- End #main -->
+
+    </div>    
+
+    <!--Ativa as opções do menu principal esquerdo -->
+<script language="JavaScript">
+    <!--
+        document.getElementById('components-nav').className ='nav-content collapse show';
+        document.getElementById('sidebar-nav-Monitoramento').className ='active';
+    //-->
+</script>
+
+
+{% endblock 'body' %}

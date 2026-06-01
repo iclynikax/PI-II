@@ -8,6 +8,19 @@
   <style>
     #map { height: 100%; width: 100%; }
     body, html { margin: 0; height: 100%; }
+
+    /* Força o painel lateral a mostrar todas as instruções */
+    .leaflet-routing-container {
+      max-height: none !important;
+      height: auto !important;
+      overflow-y: visible !important;
+    }
+
+    .leaflet-routing-alt {
+      max-height: none !important;
+      height: auto !important;
+      overflow-y: visible !important;
+    }
   </style>
 </head>
 <body>
@@ -38,9 +51,14 @@
     L.Routing.control({
       waypoints: [
         L.latLng(origemLat, origemLng),
-        L.latLng(destinoLat, destinoLng)
+        L.latLng(destinoLat, destinoLng),
       ],
-      routeWhileDragging: true
+      language: 'pt',
+      routeWhileDragging: true,
+      formatter: new L.Routing.Formatter({
+        language: 'pt',
+        units: 'metric'
+      })    
     }).addTo(map);
   </script>
 </body>

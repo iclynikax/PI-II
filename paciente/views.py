@@ -12,13 +12,12 @@ from django.contrib.auth.decorators import login_required
 from django.template.loader import render_to_string
 from django.db.models import Count, DateTimeField
 
-
 from medico.models import DadosMedico, Especialidades, DatasAbertas, is_medico, Exames
 from usuarios.models import is_Gerente, is_Atendente, is_Médico, is_Cliente, Get_cGrp_Usuario, Perfil
 from usuarios.utilities import clclar_idade
 from usuarios.models import Prfl_Endereco
 from security.models import Security_Logs
-from .models import Consulta, Documento, EntregaRetirada, Notificacao, Pet_Cliente, Pet, calcular_idade
+from .models import Consulta, Documento, PetLocalAssignment, PetMonitorHistory, EntregaRetirada, Notificacao, Pet_Cliente, Pet, calcular_idade
 from datetime import datetime, timedelta
 from collections import defaultdict
 
@@ -802,15 +801,20 @@ def fnctn_add_atrzacao(request, id_consulta):
 
 
 
-
-
 @login_required(login_url='/usuarios/login/')
 def fnctn_rtrdas_entrgas(request):
+
+    Get_IS_GERENTE = is_Gerente(request.user)
+    Get_IS_ATENDENTE = is_Atendente(request.user)
+    Get_IS_MEDICO = is_Médico(request.user)
+    Get_IS_CLIENTE = is_Cliente(request.user)
+
     slct_rtrdas_entrgas = EntregaRetirada.objects.all().order_by('data_abertura')
     
     if request.method == "GET":
 
         return render(request, 'RetiradasEngregas.html', {'rtrds_entrgs': slct_rtrdas_entrgas,
+                                                          'cGrp_Usuario': Get_cGrp_Usuario(request.user),                                                              
                                                          } 
                      )
 
@@ -829,9 +833,17 @@ def fnctn_rtrda_entrga(request, id_RtrdEntrga):
     destino_lat = slct_RtrdEntrga.latitude
     destino_lng = slct_RtrdEntrga.longitude
 
-    iframe_url = f"/static/pacientes/Mapa_Rtrda_Entrga.html?origemLat={origem_lat}&origemLng={origem_lng}&destinoLat={destino_lat}&destinoLng={destino_lng}"
+
+    iframe_url = (
+        f"/static/pacientes/Mapa_Rtrda_Entrega.html?"
+        f"origemLat={origem_lat}&"
+        f"origemLng={origem_lng}&"
+        f"destinoLat={destino_lat}&"
+        f"destinoLng={destino_lng}"
+    )
 
     return render(request, 'RetiradaEntrega.html', {
+        'cGrp_Usuario': Get_cGrp_Usuario(request.user),                                                              
         'RtrdaEntrga': slct_RtrdEntrga,
         'iframe_url': iframe_url
     })
@@ -843,9 +855,41 @@ def fnctn_rtrda_entrga(request, id_RtrdEntrga):
 def geocodificar(endereco):
     url = "https://nominatim.openstreetmap.org/search"
     params = {"q": endereco, "format": "json"}
-    response = requests.get(url, params=params, headers={"User-Agent": "sua-app"})
+    response = requests.get(url, params=params, 
+                            headers={"User-Agent": "sua-app"}
+                            )
     data = response.json()
     if data:
         return float(data[0]["lat"]), float(data[0]["lon"])
     return None, None
+
+
+
+# Acessa um lista de todos os pet que estão ou esteve em hospedagem para monitoramento
+@login_required(login_url='/usuarios/login/')
+def fnctn_mntrnto_lsta(request):
+    slct_mntrmnto = PetLocalAssignment.objects.all().order_by('start_date')
+    
+    if request.method == "GET":
+
+        return render(request, 'monitoramento_lsta.html', 
+                      {'rtrds_mntrmnto': slct_mntrmnto,
+                       'cGrp_Usuario': Get_cGrp_Usuario(request.user),
+                      } 
+                     )
+
+
+@login_required(login_url='/usuarios/login/')
+def fnctn_mntrnto(request, id_Mntoramento):
+    # Busca o movimento selecionado (internação/assignment)
+    slct_mntrmnto = get_object_or_404(PetLocalAssignment, id=id_Mntoramento)
+
+    # Busca todos os registros de histórico vinculados a esse movimento
+    slct_hstrco_mntrmnto = PetMonitorHistory.objects.filter(assignment=slct_mntrmnto).order_by('-timestamp')
+
+    return render(request, 'monitoramento.html', {
+        'rtrds_mntrmnto': slct_mntrmnto,
+        'hstrco_mntrmnto': slct_hstrco_mntrmnto,
+        'cGrp_Usuario': Get_cGrp_Usuario(request.user),
+    })
 

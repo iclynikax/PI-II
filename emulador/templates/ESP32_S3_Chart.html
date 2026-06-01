@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Emulador ESP32-S3</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial; margin: 0; height: 100%; }
+        .valor { font-size: 24px; margin: 10px; }
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            padding: 10px;
+        }
+        .left { text-align: left; }
+        button { margin: 5px; padding: 10px 20px; font-size: 16px; }
+
+        /* Container dos gráficos ocupa todo o restante da altura */
+        .graficos {
+            display: flex;
+            height: calc(100vh - 150px); /* altura total menos espaço do topo */
+        }
+        .grafico {
+            flex: 1; /* cada gráfico ocupa 50% */
+            padding: 10px;
+        }
+        canvas {
+            width: 100% !important;
+            height: 100% !important; /* ocupa toda a div */
+        }
+    </style>
+    <style>
+    .right {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: 100%; /* garante alinhamento */
+        max-width: 198px; /* ajuste conforme necessário */
+        gap: 8px;
+    }
+
+    .top-buttons {
+        display: flex;
+        width: 100%;
+        gap: 8px;
+    }
+
+    .top-buttons button {
+        flex: 1; /* cada botão ocupa metade da largura */
+    }
+
+    .bottom-button {
+        width: 100%;
+    }
+
+    .bottom-button .finalizar {
+        width: 100%; /* ocupa toda a largura dos dois acima */
+    }
+    #btnIniciar {
+        background-color: green;
+        color: white;
+    }
+
+    #btnPausar,
+    #btnFinalizar {
+        background-color: red;
+        color: white;
+    }
+
+    #btnFinalizar {
+        width: 100%; /* ocupa toda a largura dos dois acima */
+        margin-top: 8px;
+    }
+
+    button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+    }    
+    </style>    
+</head>
+<body>
+    <!-- Título, valores e botões -->
+    <div class="top-bar">
+        <div class="left">
+            <h2>Monitoramento em Tempo Real : {{ tempo }} </h2>
+            <div class="valor" id="temp"><b>Temperatura:</b> {{ temperatura }} °C</div>
+            <div class="valor" id="ruido"><b>Ruído:</b> {{ ruido }} dB</div>
+        </div>
+        <div class="right">
+            <div class="top-buttons">
+                <button id="btnIniciar" onclick="iniciar()">Iniciar</button>
+                <button id="btnPausar" onclick="pausar()" disabled>Pausar</button>
+            </div>
+            <div class="bottom-button">
+                <button id="btnFinalizar" class="finalizar" onclick="finalizar()" disabled>Finalizar</button>
+            </div>
+        </div>    
+    </div>
+
+    <!-- Gráficos lado a lado ocupando 100% da altura -->
+    <div class="graficos">
+        <div class="grafico">
+            <canvas id="graficoTemp"></canvas>
+        </div>
+        <div class="grafico">
+            <canvas id="graficoRuido"></canvas>
+        </div>
+    </div>
+
+    <script>
+        // Busca os elementos <canvas> pelo ID (graficoTemp e graficoRuido).
+        // .getContext('2d') cria o contexto gráfico 2D, que é onde o Chart.js desenha os gráficos.
+        const ctxTemp = document.getElementById('graficoTemp').getContext('2d');
+        const ctxRuido = document.getElementById('graficoRuido').getContext('2d');
+
+        // Criação do gráfico de temperatura
+        const graficoTemp = new Chart(ctxTemp, { //  cria um gráfico dentro do canvas de temperatura.
+            type: 'line', // define que o gráfico será do tipo linha.
+            data:  { labels: [],  //  lista de rótulos do eixo X (inicialmente vazia).
+                  // datasets: conjunto de dados que será plotado.
+                     datasets:  [{ label: 'Temperatura (°C)',  // legenda exibida no gráfico.
+                                   data: [],  // valores da temperatura (inicialmente vazio).
+                                   borderColor: 'red'  //  cor da linha do gráfico.
+                                }] 
+                    },
+            options:    { responsive: true, // faz o gráfico se ajustar ao tamanho da tela.
+                          maintainAspectRatio: false // permite que o gráfico ocupe toda a 
+                        }                            // altura/largura do container.
+        });
+
+        const graficoRuido = new Chart(ctxRuido, {
+            type: 'line',
+            data:   { labels: [], 
+                      datasets: [{ label: 'Ruído (dB)', 
+                                   data: [], 
+                                   borderColor: 'blue' 
+                                }]
+                    },
+            options: { responsive: true, 
+                       maintainAspectRatio: false 
+                    }
+        });
+
+     // Cria uma variável global chamada intervalo.
+        let intervalo = null;   // Essa variável será usada para armazenar o ID do setInterval,
+                                // permitindo iniciar e parar a atualização dos gráficos.
+                                // Inicialmente está null, ou seja, não há atualização em andamento.
+
+
+    //  Define uma função assíncrona chamada atualizarDados.
+    //  O async permite usar await dentro da função, ou seja, esperar respostas de chamadas 
+    //  assíncronas (como fetch) sem travar o navegador.
+        async function atualizarDados() {
+
+        //  Faz uma requisição HTTP para a rota Django que retorna os dados em JSON.
+        //  O await garante que o código só continua depois que a resposta chegar.
+        //  O {% url 'url_dados_esp32_s3' id_assignment %} é resolvido pelo Django 
+        //  para o caminho correto da API, que esta configurado no urls.py
+            const response = await fetch("{% url 'url_dados_esp32_s3' id_assignment  %}  ");
+
+        //  Converte a resposta da requisição em um objeto JavaScript.
+            const dados = await response.json();      
+
+        //  Cria uma string com o horário atual do navegador (ex.: 23:23:08).
+        //  Esse valor será usado como rótulo no eixo X dos gráficos.
+            const hora = new Date().toLocaleTimeString();
+
+        //  No gráfico de temperatura.............................................................
+        //  Adiciona o horário atual (hora) como novo rótulo no eixo X.
+            graficoTemp.data.labels.push(hora);
+
+        //  Adiciona o valor de temperatura (dados.temperatura) como novo ponto da linha vermelha.
+            graficoTemp.data.datasets[0].data.push(dados.temperatura);
+
+        //  Atualiza o gráfico para desenhar o novo ponto.
+            graficoTemp.update();
+        //................................................................Final Gráfico Temperatura
+
+
+        //  No gráfico de Ruído.....................................................................
+            graficoRuido.data.labels.push(hora);                    //  Verifica esses comandos 
+            graficoRuido.data.datasets[0].data.push(dados.ruido);   //  na linhas do gráfico de 
+            graficoRuido.update();                                  //  Temperatura acima.
+        //.......................................................................Final Gráfico Ruído
+
+        //  Atualiza os elementos <div> com os valores mais recentes de temperatura e ruído, no HTML5
+            document.querySelector("h2").innerHTML = "Monitoramento em Tempo Real : " + dados.tempo;
+            document.getElementById("temp").innerHTML = "<b>Temperatura:</b> " + dados.temperatura + " °C";
+            document.getElementById("ruido").innerHTML = "<b>Ruído:</b> " + dados.ruido + " dB";
+        }
+        function iniciar() {
+            if (!intervalo) intervalo = setInterval(atualizarDados, 2000);
+            // Iniciar fica amarelo e inativo
+            const btnIniciar = document.getElementById("btnIniciar");
+            btnIniciar.disabled = true;
+            btnIniciar.style.backgroundColor = "yellow";
+            btnIniciar.style.color = "black";
+
+            // Pausar e Finalizar ficam verdes e ativos
+            const btnPausar = document.getElementById("btnPausar");
+            const btnFinalizar = document.getElementById("btnFinalizar");
+
+            btnPausar.disabled = false;
+            btnFinalizar.disabled = false;
+
+            btnPausar.style.backgroundColor = "green";
+            btnFinalizar.style.backgroundColor = "green";            
+
+        }
+        function pausar() {
+            if (intervalo) { clearInterval(intervalo); intervalo = null; }
+            // Resetar estado inicial
+            const btnIniciar = document.getElementById("btnIniciar");
+            const btnPausar = document.getElementById("btnPausar");
+            const btnFinalizar = document.getElementById("btnFinalizar");
+
+            btnIniciar.disabled = false;
+            btnIniciar.style.backgroundColor = "green";
+            btnIniciar.style.color = "white";
+
+            btnPausar.disabled = true;
+            btnPausar.style.backgroundColor = "red";
+
+            btnFinalizar.disabled = true;
+            btnFinalizar.style.backgroundColor = "red";
+
+
+        }
+        function finalizar() {
+            console.log("Monitoramento finalizado");
+
+            // Resetar estado inicial
+            const btnIniciar = document.getElementById("btnIniciar");
+            const btnPausar = document.getElementById("btnPausar");
+            const btnFinalizar = document.getElementById("btnFinalizar");
+
+            btnIniciar.disabled = false;
+            btnIniciar.style.backgroundColor = "green";
+            btnIniciar.style.color = "white";
+
+            btnPausar.disabled = true;
+            btnPausar.style.backgroundColor = "red";
+
+            btnFinalizar.disabled = true;
+            btnFinalizar.style.backgroundColor = "red";
+        }
+    </script>
+</body>
+</html>

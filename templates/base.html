@@ -36,7 +36,7 @@
       
   </head>
   
-  <body class="toggle-sidebar">
+  <body {% if Perfil_User.id_mn_Esquerdo == 1 %}class="toggle-sidebar"{% endif %}>
 
 
     <!-- ======= Header ======= -->
@@ -46,8 +46,23 @@
         <a href="./" class="logo d-flex align-items-center">
           <img src="{% static 'security/static/assets/img/logo.png'%}" alt="">
           <span class="d-none d-lg-block">iClynikaX</span>
-        </a> 
-        <i class="bi bi-list toggle-sidebar-btn"></i>
+        </a>
+
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <!-- Botão original -->
+          <i id="{{Perfil_User.id_mn_Esquerdo}}"
+             class="bi bi-list"
+             onclick="document.body.classList.toggle('toggle-sidebar'); svsttusmnesquerdo(this);"
+             style="cursor: pointer;">
+          </i>
+
+          <!-- Novo botão ao lado -->
+          <i id="{{Perfil_User.id_mn_Esquerdo}}"
+             class="bi bi-layout-sidebar-inset-reverse"
+             onclick="document.body.classList.toggle('toggle-sidebar'); svsttusmnesquerdo(this);"
+             style="cursor: pointer;">
+          </i>
+        </div>
       </div><!-- End Logo -->
 
 
@@ -274,58 +289,100 @@
     </header><!-- End Header -->
 
 
-      <!-- Menu Principal Esquerdo -->
-      <aside id="sidebar" class="sidebar">
-        <ul class="sidebar-nav" id="sidebar-nav">
-          <li class="nav-item">
-            <a class="nav-link collapsed" href="./"><i class="bi bi-grid"></i><span>Menu Principal</span></a>
-          </li>
+    <!-- Menu Principal Esquerdo -->
+    <aside id="sidebar" class="sidebar">
+      <ul class="sidebar-nav" id="sidebar-nav">
+        <li class="nav-item">
+          <a class="nav-link collapsed" href="./"><i class="bi bi-grid"></i><span>Menu Principal </span></a>
+        </li>
 
-          <!-- ======= Se o usuário for do grupo Atendente ======= -->
-          {% if cGrp_Usuario == 'Atendente' and not request.user.is_superuser %}
+        <!-- ======= Se o usuário for do grupo Projeto Integrador V ======= -->
+        {% if cGrp_Usuario == 'PI-V' and not request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li><a title="Monitoramento & Acompanhamento" id="sidebar-nav-Monitoramento" href="{% url 'url_mntrnto_lsta'  %}"><i class="bi bi-circle"></i><span>Monitoramento</span></a></li>
+            </ul>
+          </li><!-- End Forms Nav -->
+        {% endif %}
+        <!-- ======= Finaliza se o usuário for do grupo Atendente ======= -->
+
+
+        <!-- ======= Se o usuário for do grupo Atendente ======= -->
+        {% if cGrp_Usuario == 'Atendente' and not request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li><a title="Lista de cadastro de clientes" href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+              <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
+              <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+              <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+            </ul>
+          </li><!-- End Forms Nav -->
+        {% endif %}
+        <!-- ======= Finaliza se o usuário for do grupo Atendente ======= -->
+
+        <!-- ======= Se o usuário for do grupo Gerente ======= -->
+          {% if cGrp_Usuario == 'Gerente' and not request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
               </a>
               <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li><a title="Lista de cadastro de clientes" href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+                <li><a title="Lista de cadastro de clientes"  href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
                 <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
                 <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
-                <li><a title="Agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda---</span></a></li>
-              </ul>
-            </li><!-- End Forms Nav -->
-          {% endif %}
-          <!-- ======= Finaliza se o usuário for do grupo Atendente ======= -->
-
-          <!-- ======= Se o usuário for do grupo Gerente ======= -->
-            {% if cGrp_Usuario == 'Gerente' and not request.user.is_superuser %}
-              <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  <li><a title="Lista de cadastro de clientes"  href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
-                  <li><a title="Lista de cadastro de Consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
-                  <li><a title="Lista de cadastro de Autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
-                  <li><a title="Agenda" href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
-                </ul>
-              </li>
-            {% endif %}
-          <!-- ======= Finaliza se o usuário for do grupo Gerente ======= -->
-
-          {% if request.user.is_superuser %}
-            <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li><a title="Lista de cadastro de clientes" id="sidebar-nav-Atendimento-clientes" href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
-                <li><a title="Lista de cadastro de Consultas" id="sidebar-nav-Atendimento-consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
-                <li><a title="Lista de cadastro de Autorizações" id="sidebar-nav-Atendimento-autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
-                <li><a title="Agenda" id="sidebar-nav-Atendimento-agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+                <li><a title="Agenda" href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+                <li><a title="Retirada e entregas de Pets" id="sidebar-nav-Retirada-Entrega" href="{% url 'url_rtrdas_entrgas'  %}"><i class="bi bi-circle"></i><span>Retirada & Entregas</span></a></li>
               </ul>
             </li>
+          {% endif %}
+        <!-- ======= Finaliza se o usuário for do grupo Gerente ======= -->
 
+        {% if request.user.is_superuser %}
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#components-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Atendimento</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="components-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li><a title="Lista de cadastro de clientes" id="sidebar-nav-Atendimento-clientes" href="{% url 'url_clnts_lista' %}"><i class="bi bi-circle"></i><span>Clientes</span></a></li>
+              <li><a title="Lista de cadastro de Consultas" id="sidebar-nav-Atendimento-consultas" href="{% url 'url_pcnts_cnsltas' %}"><i class="bi bi-circle"></i><span>Consultas</span></a></li>
+              <li><a title="Lista de cadastro de Autorizações" id="sidebar-nav-Atendimento-autorizações" href="{% url 'url_atrzacoes'  %}"><i class="bi bi-circle"></i><span>Autorizações</span></a></li>
+              <li><a title="Agenda" id="sidebar-nav-Atendimento-agenda"  href="{% url 'url_agenda' %}"><i class="bi bi-circle"></i><span>Agenda</span></a></li>
+              <li><a title="Retirada e entregas de Pets" id="sidebar-nav-Retirada-Entrega" href="{% url 'url_rtrdas_entrgas'  %}"><i class="bi bi-circle"></i><span>Retirada & Entregas</span></a></li>
+              <li><a title="Monitoramento & Acompanhamento" id="sidebar-nav-Monitoramento" href="{% url 'url_mntrnto_lsta'  %}"><i class="bi bi-circle"></i><span>Monitoramento</span></a></li>
+            </ul>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#security-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Security</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="security-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li><a title="Mapa Geral de Segurança" id="sidebar-nav-security-mapa" href="{% url 'url_security' %}"><i class="bi bi-circle"></i><span>Mapa Geral</span></a></li>
+            </ul>
+          </li>
+          <li class="nav-heading">Configurações</li>
+          <li class="nav-item">
+            <a class="nav-link collapsed" data-bs-target="#usuarios-nav" data-bs-toggle="collapse" href="#">
+              <i class="bi bi-menu-button-wide"></i><span>Usuários</span><i class="bi bi-chevron-down ms-auto"></i>
+            </a>
+            <ul id="usuarios-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+              <li>
+                <a href="components-alerts.html">
+                  <i class="bi bi-circle"></i><span>Acessos</span>
+                </a>
+              </li>
+            </ul>
+          </li><!-- End Forms Nav -->
+        {% endif %}
+
+        <!-- ======= Se o usuário for do PI-IV ======= -->
+          {% if cGrp_Usuario == 'PI-IV' and not request.user.is_superuser %}
             <li class="nav-item">
               <a class="nav-link collapsed" data-bs-target="#security-nav" data-bs-toggle="collapse" href="#">
                 <i class="bi bi-menu-button-wide"></i><span>Security</span><i class="bi bi-chevron-down ms-auto"></i>
@@ -334,87 +391,113 @@
                 <li><a title="Mapa Geral de Segurança" id="sidebar-nav-security-mapa" href="{% url 'url_security' %}"><i class="bi bi-circle"></i><span>Mapa Geral</span></a></li>
               </ul>
             </li>
-            <li class="nav-heading">Configurações</li>
-            <li class="nav-item">
-              <a class="nav-link collapsed" data-bs-target="#usuarios-nav" data-bs-toggle="collapse" href="#">
-                <i class="bi bi-menu-button-wide"></i><span>Usuários</span><i class="bi bi-chevron-down ms-auto"></i>
-              </a>
-              <ul id="usuarios-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                <li>
-                  <a href="components-alerts.html">
-                    <i class="bi bi-circle"></i><span>Acessos</span>
-                  </a>
-                </li>
-              </ul>
-            </li><!-- End Forms Nav -->
           {% endif %}
-
-          <!-- ======= Se o usuário for do PI-IV ======= -->
-            {% if cGrp_Usuario == 'PI-IV' and not request.user.is_superuser %}
-              <li class="nav-item">
-                <a class="nav-link collapsed" data-bs-target="#security-nav" data-bs-toggle="collapse" href="#">
-                  <i class="bi bi-menu-button-wide"></i><span>Security</span><i class="bi bi-chevron-down ms-auto"></i>
-                </a>
-                <ul id="security-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-                  <li><a title="Mapa Geral de Segurança" id="sidebar-nav-security-mapa" href="{% url 'url_security' %}"><i class="bi bi-circle"></i><span>Mapa Geral</span></a></li>
-                </ul>
-              </li>
-            {% endif %}
-          <!-- ======= Fim das opções para os suário do PI-IV ======= -->
+        <!-- ======= Fim das opções para os suário do PI-IV ======= -->
 
 
 
 
-          <li class="nav-item">
-            <a class="nav-link collapsed" data-bs-target="#Help-nav" data-bs-toggle="collapse" href="#">
-              <i class="bi bi-menu-button-wide"></i><span>Help</span><i class="bi bi-chevron-down ms-auto"></i>
-            </a>
-            <ul id="Help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
-              <li>
-                <a class="nav-link collapsed" id="sidebar-nav-sobre" href="{% url 'url_scrty_sobre' %}"><i class="bi bi-circle"></i><span>Sobre</span></a>
-              </li>
-            </ul>
-          </li><!-- End Forms Nav -->
+        <li class="nav-item">
+          <a class="nav-link collapsed" data-bs-target="#Help-nav" data-bs-toggle="collapse" href="#">
+            <i class="bi bi-menu-button-wide"></i><span>Help</span><i class="bi bi-chevron-down ms-auto"></i>
+          </a>
+          <ul id="Help-nav" class="nav-content collapse " data-bs-parent="#sidebar-nav">
+            <li>
+              <a class="nav-link collapsed" id="sidebar-nav-sobre" href="{% url 'url_scrty_sobre' %}"><i class="bi bi-circle"></i><span>Sobre</span></a>
+            </li>
+          </ul>
+        </li><!-- End Forms Nav -->
 
 
-        </ul>
+      </ul>
 
-      </aside><!-- End Sidebar-->
+    </aside><!-- End Sidebar-->
 
     
-      {% block 'body' %}
-      
-      
-      
-      {% endblock 'body' %}
+    {% block 'body' %}
+    
+    
+    
+    {% endblock 'body' %}
 
 
-      <!-- Footer -->
-      <footer id="footer" class="footer">
-        <div class="copyright">
-              2025 - 2026 <strong> : </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
-        </div>
-      </footer
-      ><!-- End Footer -->
+    <!-- Footer -->
+    <footer id="footer" class="footer">
+      <div class="copyright">
+            2025 - 2026 <strong> : </strong>UNIVESP - Universidade Virtual do Estado de São Paulo : Projeto Integrador - <b>iClynikaX - Sistema de Gerenciamento de Clínicas</b>
+      </div>
+    </footer
+    ><!-- End Footer -->
 
-      <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
 
-      <!-- Vendor JS Files -->
-      <script src="{% static 'security/static/assets/vendor/apexcharts/apexcharts.min.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/chart.js/chart.umd.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/echarts/echarts.min.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/quill/quill.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/simple-datatables/simple-datatables.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/tinymce/tinymce.min.js'%}"></script>
-      <script src="{% static 'security/static/assets/vendor/php-email-form/validate.js'%}"></script>
+    <!-- Vendor JS Files -->
+    <script src="{% static 'security/static/assets/vendor/apexcharts/apexcharts.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/bootstrap/js/bootstrap.bundle.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/chart.js/chart.umd.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/echarts/echarts.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/quill/quill.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/simple-datatables/simple-datatables.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/tinymce/tinymce.min.js'%}"></script>
+    <script src="{% static 'security/static/assets/vendor/php-email-form/validate.js'%}"></script>
 
 
-      <!-- Template Main JS File -->
-      <script src="{% static 'security/static/assets/js/main.js' %}?v={% now 'YmdHis' %}"></script>
+    <!-- Template Main JS File -->
+    <script src="{% static 'security/static/assets/js/main.js' %}?v={% now 'YmdHis' %}"></script>
 
-      <script src="{% static 'geral/js/myFunctions.js' %}"></script>
+    <script src="{% static 'geral/js/myFunctions.js' %}"></script>
 
+    {% if Perfil_User.id_mn_Esquerdo == '1' %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.classList.add("toggle-sidebar");
+          document.body.classList.remove("sidebar-collapsed");
+        });
+      </script>
+    {% else %}
+      <script>
+        document.addEventListener("DOMContentLoaded", function () {
+          document.body.classList.add("sidebar-collapsed");
+          document.body.classList.remove("toggle-sidebar");
+        });
+      </script>
+    {% endif %}
+
+    <script>
+      function svsttusmnesquerdo(obj) {
+        let novoValor = obj.id === "1" ? 0 : 1;
+        const url = "{% url 'atualizar_menu_esquerdo' %}";
+
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            id_mn_Esquerdo: novoValor
+          })
+        })
+        .then(response => {
+          if (response.ok) {
+            console.log('Valor atualizado com sucesso');
+            obj.id = novoValor.toString(); // atualiza o id do botão
+          } else {
+            console.error('Erro ao atualizar');
+          }
+        })
+        .catch(error => {
+          console.error('Erro na requisição:', error);
+        });
+        body: JSON.stringify({ id_mn_Esquerdo: parseInt(obj.id) })
+        // Assume que é zero se for 1 e Um se for zero        
+        obj.id = obj.id === "1" ? "0" : "1";
+      }
+
+      function abrirPainelDireito() {
+        // Exemplo: abrir painel lateral direito
+        document.getElementById('painel-direito').classList.toggle('ativo');
+      }
+    </script>
 
   </body>
 

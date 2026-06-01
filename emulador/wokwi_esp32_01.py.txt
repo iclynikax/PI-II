@@ -1,0 +1,93 @@
+import network, time, urequests, ntptime
+import dht
+import random
+from machine import Pin, ADC, Pin
+
+# valor inicial
+temperatura = 25.0  
+
+for i in range(10):
+    # gera variação entre -3 e +3
+    variacao = random.uniform(-3, 3)
+    temperatura += variacao
+
+    # garante que fique dentro do intervalo -20 a 80
+    if temperatura < -20:
+        temperatura = -20
+    elif temperatura > 80:
+        temperatura = 80
+
+    print("Temperatura simulada:", round(temperatura, 2))
+
+
+# Conecta ao Wi-Fi do Wokwi
+sta_if = network.WLAN(network.STA_IF)
+sta_if.active(True)
+sta_if.connect("Wokwi-GUEST", "")
+while not sta_if.isconnected():
+    print(".", end="")
+    time.sleep(0.1)
+print("Conectado ao WiFi!")
+
+# Sincroniza com servidor NTP (hora UTC)
+try:
+    ntptime.settime()
+    print("Hora sincronizada com NTP!")
+except Exception as e:
+    print("Erro ao sincronizar NTP:", e)
+
+
+
+# Configura sensores
+sensor_temp = dht.DHT22(Pin(15))   # DHT22 no pino 15
+adc_ruido = ADC(Pin(34))           # ADC no pino 34 (simulando microfone)
+adc_ruido.atten(ADC.ATTN_11DB)     # faixa completa de 0–3.3V
+
+adc_ruido = ADC(Pin(34))
+adc_ruido.atten(ADC.ATTN_11DB)
+
+url = "http://construplus.net:9090/emulador/Rspbrry_PI_Pico_W/emulador/dados/1/"
+
+inicio = time.time()  # segundos desde o boot
+while True:
+    # Lê temperatura do DHT22
+    # sensor_temp.measure()
+    # temperatura = sensor_temp.temperature()
+
+    # mantém valor anterior e aplica variação
+    variacao = random.uniform(-5, 5)
+    temperatura += variacao
+
+    # limita entre -20 e 80
+    temperatura = max(-20, min(80, temperatura))
+
+    adc_ruido = ADC(Pin(34))
+    adc_ruido.atten(ADC.ATTN_11DB)
+    # Lê valor analógico do ADC (0–4095)
+    ruido_raw = adc_ruido.read()  # valor entre 0 e 4095
+    ruido = int((ruido_raw / 4095) * 90)  # escala para dB
+
+    print("Ruído:", ruido, "dB")
+
+    # Captura horário atual ajustado para Brasil (UTC-3)
+    agora = time.localtime()
+    hora_local = (agora[3] - 3) % 24
+    tempo = "{:02d}:{:02d}:{:02d}".format(hora_local, agora[4], agora[5])
+    print("Tempo simulado:", tempo)
+    time.sleep(2)
+
+
+    payload = {
+        "temperatura": temperatura,
+        "ruido": ruido,
+        "tempo": tempo
+    }
+
+    try:
+        r = urequests.post(url, json=payload)
+        print("Enviado:", payload, "Resposta:", r.text)
+        r.close()
+    except Exception as e:
+        print("Erro ao enviar:", e)
+
+    time.sleep(2)

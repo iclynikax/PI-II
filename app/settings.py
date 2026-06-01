@@ -20,6 +20,11 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['iclynikax.construplus.net/''construplus.net/iclynikax', "*"]
 
+# Configurar o servidor para aceitar múltiplas origens
+# Isso permite que o conteúdo seja exibido em iframes, mesmo de origens diferentes.
+X_FRAME_OPTIONS = 'ALLOWALL'
+
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -33,6 +38,7 @@ INSTALLED_APPS = [
     'medico',
     'paciente',
     'security',
+    'emulador',
 ]
 INSTALLED_APPS += ['corsheaders']
 
